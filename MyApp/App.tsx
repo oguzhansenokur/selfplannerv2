@@ -27,30 +27,38 @@ export default function App() {
   const handleOnChangeAmount = (amount) => {setObjAmount(amount)};
   const handleOnChangeCurr = (curr) => {setObjCurr(curr)};
   const handleOnChangeNote = (note) => {setObjNote(note)};
-  const [objectives,setObjectives] = useState([])
+  const [objectives,setObjectives] = useState<Array>([])
 
   const toggleBottomNavigationView = () => {
     setVisible(!visible);
   };
   console.log(objAmount)
+
+  
+  
+
+
   const handleSubmit = async ()=>{
+   
+    
 
-    setTime(Date.now())
-    const objective={id:time,objectName:objName,objectAmount:objAmount,objectCurr:objCurr,objectNote:objNote}
-    const updatedObj = [...objectives, objective]
-    setObjectives(updatedObj)
-    await AsyncStorage.setItem('objective',JSON.stringify(updatedObj))
-
-  setObjName('');
-  setObjAmount(0);
-  setObjCurr(0);
-  setObjNote('');
-  toggleBottomNavigationView();
- 
- 
+      const newObj={id:Date.now(),objectName:objName,objectAmount:objAmount,objectCurr:objCurr,objectNote:objNote}
+      const newObjectives = [...objectives,newObj]
+      setObjectives(newObjectives)
+      await AsyncStorage.setItem('objective',JSON.stringify(newObjectives))
+    
 
 
   }
+
+  const ListofObjects=()=>{
+  
+    
+  
+  }
+    
+    
+  
   const deleteAll=()=>
   {
    AsyncStorage.clear()
@@ -60,9 +68,11 @@ export default function App() {
   const getObjectives= async () =>{
     
     const result= await AsyncStorage.getItem('objective')
-    console.log(JSON.parse(result))
-
-    setObjectives(JSON.parse(result))
+    if(result !== null){
+      setObjectives(JSON.parse(result))
+      console.log(JSON.parse(result))
+    }
+  
   }
   useEffect(()=> {
 
@@ -81,7 +91,21 @@ export default function App() {
       <Text style={{color:'white'}}>Delete</Text>
        </TouchableOpacity>
        <View style={{justifyContent:'center'}}>
-   
+        
+        {objectives.map((item)=>{
+          if(Object.keys(item).length>0){
+            return(
+              <Objectives key={item.id} objectName={item.objectName} objectAmount={item.objectAmount} objectCurr={item.objectCurr} objectNote={item.objectNote}/>
+            )
+          
+          }
+          else{
+          
+          }
+        
+        })}
+      
+       
      
        </View>
        <BottomSheet 
