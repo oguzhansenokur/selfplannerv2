@@ -25,9 +25,9 @@ export default function App() {
   const [visible, setVisible] = useState(false);
   const handleOnChangeName = (name) => {setObjName(name)};
   const handleOnChangeAmount = (amount) => {setObjAmount(amount)};
-  const handleOnChangeCurr = (curr) => {setObjCurr(curr)};
-  const handleOnChangeNote = (note) => {setObjNote(note)};
-  const [objectives,setObjectives] = useState<Array>([])
+  const handleOnChangeCurr = (curr ) => {setObjCurr(curr)};
+  const handleOnChangeNote = (note ) => {setObjNote(note)};
+  const [objectives,setObjectives] = useState<Array<any>>([])
 
   const toggleBottomNavigationView = () => {
     setVisible(!visible);
@@ -95,7 +95,7 @@ export default function App() {
         {objectives.map((item)=>{
           if(Object.keys(item).length>0){
             return(
-              <Objectives key={item.id} objectName={item.objectName} objectAmount={item.objectAmount} objectCurr={item.objectCurr} objectNote={item.objectNote}/>
+              <Objectives key={item.id} id={item.id} objectName={item.objectName} objectAmount={item.objectAmount} objectCurr={item.objectCurr} objectNote={item.objectNote}/>
             )
           
           }

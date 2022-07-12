@@ -1,14 +1,25 @@
-import { Image, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, Touchable, TouchableOpacity, View,Alert } from 'react-native'
 import React, { useState ,useEffect} from 'react'
 import ProgressBar from './ProgressBar'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Props {
-    key: number,
+    id: number,
     objectName: String,
     objectAmount:number,
     objectCurr : number,
     objectNote : String,
 }
+
+const AddWallet=()=> {
+
+
+}
+
+
+
+
+
 
 export default function Objectives(props:Props) {
     const [progNum,setProgNum]=useState(props.objectAmount);
@@ -48,17 +59,33 @@ export default function Objectives(props:Props) {
         checkNums()
     },[])
 
+    const deleteItem= async ()=>{
+       const result= await AsyncStorage.getItem('objective')
+       let objectives=[]
+       let objectives2=[]
+       if(result!==null)
+       {objectives=JSON.parse(result)
+        console.log(objectives)
+    } 
+        objectives2=objectives.filter(item=>item.id!=props.id)
+        await AsyncStorage.setItem('objective',JSON.stringify(objectives2))
+    
 
+    }
+
+    const DeleteItemAlert=()=>{
+        Alert.alert('Gerçekten Hedefinizi Silmek İstiyor musunuz?','Bu işlem geri alınamaz.',[{text:'Sil',onPress:deleteItem},{text:'İptal',style:'cancel'}],{cancelable:true})
+    
+    }
   
 
   return (
     <View style={styles.objectiveDiv} >
-        <Text ></Text>
         <View style={styles.titleDiv} ><Text style={styles.titleText}>{props.objectName}</Text></View>
         <View style={styles.contentDiv} ><ProgressBar objectAmount={props.objectAmount} objectCurr={props.objectCurr} progColor={progColor} progNum={progNum} />
         
         </View>
-      <View style={styles.buttonsDiv} ><TouchableOpacity style={styles.addButton}><Image style={{alignSelf:'center'}} source={require('./icons/plus.png')} /></TouchableOpacity><TouchableOpacity style={styles.addButton}><Image style={{alignSelf:'center'}} source={require('./icons/minus.png')} /></TouchableOpacity><TouchableOpacity style={styles.deleteButon}><Image style={{alignSelf:'center'}} source={require('./icons/close.png')} /></TouchableOpacity><TouchableOpacity style={styles.editButton}><Image style={{alignSelf:'center'}} source={require('./icons/edit.png')} /></TouchableOpacity></View>
+      <View style={styles.buttonsDiv} ><TouchableOpacity style={styles.addButton}><Image style={{alignSelf:'center'}} source={require('./icons/plus.png')} /></TouchableOpacity><TouchableOpacity style={styles.addButton}><Image style={{alignSelf:'center'}} source={require('./icons/minus.png')} /></TouchableOpacity><TouchableOpacity onPress={DeleteItemAlert} style={styles.deleteButon}><Image style={{alignSelf:'center'}} source={require('./icons/close.png')} /></TouchableOpacity><TouchableOpacity style={styles.editButton}><Image style={{alignSelf:'center'}} source={require('./icons/edit.png')} /></TouchableOpacity></View>
 
     </View>
   )
@@ -89,7 +116,6 @@ const styles = StyleSheet.create({
     },
     buttonsDiv:{
         flexDirection:'row',
-        backgroundColor:'#ebf5f0',
         justifyContent:'space-between',
         padding:10,
 
