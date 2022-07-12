@@ -77,7 +77,7 @@ export default function App() {
   useEffect(()=> {
 
     getObjectives();
-  },[])
+  },[objectives])
 
     return (
       <SafeAreaProvider style={styles.container}>
