@@ -16,7 +16,6 @@ type PropType = {
 }
 
 export default function App() {
- 
   const [objName,setObjName]= useState('')
   const [objAmount,setObjAmount]= useState(0)
   const [objCurr,setObjCurr]= useState(0)
@@ -32,7 +31,6 @@ export default function App() {
   const toggleBottomNavigationView = () => {
     setVisible(!visible);
   };
-  console.log(objAmount)
 
   
   
@@ -70,7 +68,7 @@ export default function App() {
     const result= await AsyncStorage.getItem('objective')
     if(result !== null){
       setObjectives(JSON.parse(result))
-      console.log(JSON.parse(result))
+     // console.log(JSON.parse(result))
     }
   
   }
