@@ -97,6 +97,11 @@ export default function Objectives(props: Props) {
 
 
     }
+    const sum=(a,b)=>{
+        return a+b
+    }
+
+
 
     const DeleteItemAlert = () => {
         Alert.alert('Gerçekten Hedefinizi Silmek İstiyor musunuz?', 'Bu işlem geri alınamaz.', [{ text: 'Sil', onPress: deleteItem }, { text: 'İptal', style: 'cancel' }], { cancelable: true })
@@ -121,6 +126,34 @@ export default function Objectives(props: Props) {
         await AsyncStorage.setItem('objective',JSON.stringify(merge))
 
     }
+
+    const minusFunction = async () => {
+        if(minus>=props.objectAmount)
+        {
+            Alert.alert('Hedef Miktarının Daha Az Olamaz!', '', [{ text: 'Tamam', style: 'cancel' }], { cancelable: true })
+        }
+        else{
+            const result = await AsyncStorage.getItem('objective')
+            let objectives = []
+            if (result !== null) {
+                objectives = JSON.parse(result)
+            }
+            
+            let objectives2 = objectives.filter(item => item.id == props.id)
+             objectives = objectives.filter(item => item.id != props.id)
+            objectives2[0].objectCurr = objectives2[0].objectCurr - minus
+            const merge =objectives.concat(objectives2)
+            await AsyncStorage.setItem('objective', JSON.stringify(merge))
+        }
+
+     
+        
+
+
+        
+    }
+
+    
 
     
 
@@ -193,7 +226,7 @@ export default function Objectives(props: Props) {
 
 
 
-                            <TouchableOpacity
+                            <TouchableOpacity onPress={minusFunction}
                                 style={{ backgroundColor: '#7C3E66', width: '100%', height: '75%', margin: 85, justifyContent: 'center', alignItems: 'center', borderRadius: 50, }}
                                 activeOpacity={1}
 
@@ -216,8 +249,15 @@ export default function Objectives(props: Props) {
                         <View style={styles.itemDiv} >
 
                             <Text style={{ color: '#7B3B75', fontWeight: 'bold', fontSize: 16, marginLeft: '12%' }}>Eklenecek Para </Text>
-                            <TextInput style={{ backgroundColor: '#F5F5F5', width: '90%', height: 35, borderRadius: 50, paddingLeft: 15, color: 'black', fontWeight: 'bold', alignSelf: 'center', marginTop: 5, marginBottom: 15 }} />
-
+                            <TextInput 
+                            keyboardType='numeric'
+                            onChangeText={handleOnChangePlus}
+                            value={plus}
+                            style={{ backgroundColor: '#F5F5F5', width: '90%', height: 35, borderRadius: 50, paddingLeft: 15, color: 'black', fontWeight: 'bold', alignSelf: 'center', marginTop: 5, marginBottom: 15 }} />
+                            <View style={{flexDirection:'row'}} >
+                                <View style={{flexDirection:'column'}}><Text style={{fontWeight:'bold',color:'black',marginLeft:'20%',fontSize:16}}>Mevcut Para:</Text><Text style={{fontWeight:'bold',color:'black',marginLeft:'20%',fontSize:16}}>Eklenecek Para:</Text><Text style={{fontWeight:'bold',color:'black',marginLeft:'20%',fontSize:16,marginTop:25}} >İşlem Sonu Bakiye</Text></View>
+                                <View style={{flexDirection:'column'}} ><Text style={{fontSize:16}}>{props.objectCurr} ₺</Text><Text style={{fontSize:16,color:'green'}}>{plus} ₺</Text><View style={{borderColor:'black',borderWidth:1,width:'100%',marginTop:10}} ></View><Text style={{marginTop:10,fontSize:16}}>{sum(props.objectCurr,plus)} ₺</Text></View>
+                            </View>
                         </View>
                         <View style={{ flexDirection: 'column', justifyContent: 'center', width: '50%', height: '2%' }}>
 
