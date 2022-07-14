@@ -153,6 +153,7 @@ export default function Objectives(props: Props) {
         
     }
 
+
     
 
     
@@ -251,12 +252,13 @@ export default function Objectives(props: Props) {
                             <Text style={{ color: '#7B3B75', fontWeight: 'bold', fontSize: 16, marginLeft: '12%' }}>Eklenecek Para </Text>
                             <TextInput 
                             keyboardType='numeric'
-                            onChangeText={handleOnChangePlus}
                             value={plus}
+
+                            onChangeText={handleOnChangePlus}
                             style={{ backgroundColor: '#F5F5F5', width: '90%', height: 35, borderRadius: 50, paddingLeft: 15, color: 'black', fontWeight: 'bold', alignSelf: 'center', marginTop: 5, marginBottom: 15 }} />
                             <View style={{flexDirection:'row'}} >
                                 <View style={{flexDirection:'column'}}><Text style={{fontWeight:'bold',color:'black',marginLeft:'20%',fontSize:16}}>Mevcut Para:</Text><Text style={{fontWeight:'bold',color:'black',marginLeft:'20%',fontSize:16}}>Eklenecek Para:</Text><Text style={{fontWeight:'bold',color:'black',marginLeft:'20%',fontSize:16,marginTop:25}} >İşlem Sonu Bakiye</Text></View>
-                                <View style={{flexDirection:'column'}} ><Text style={{fontSize:16}}>{props.objectCurr} ₺</Text><Text style={{fontSize:16,color:'green'}}>{plus} ₺</Text><View style={{borderColor:'black',borderWidth:1,width:'100%',marginTop:10}} ></View><Text style={{marginTop:10,fontSize:16}}>{sum(props.objectCurr,plus)} ₺</Text></View>
+                                <View style={{flexDirection:'column'}} ><Text style={{fontSize:16}}>{props.objectCurr} ₺</Text><Text style={{fontSize:16,color:'green'}}>{plus} ₺</Text><View style={{borderColor:'black',borderWidth:1,width:'100%',marginTop:10}} ></View><Text style={{marginTop:10,fontSize:16}}> { -1*(-1*(plus)-props.objectCurr)} ₺</Text></View>
                             </View>
                         </View>
                         <View style={{ flexDirection: 'column', justifyContent: 'center', width: '50%', height: '2%' }}>
