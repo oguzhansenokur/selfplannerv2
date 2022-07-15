@@ -30,6 +30,10 @@ export default function App() {
 
   const toggleBottomNavigationView = () => {
     setVisible(!visible);
+    setObjName('')
+    setObjAmount(0)
+    setObjCurr(0)
+    setObjNote('')
   };
 
   

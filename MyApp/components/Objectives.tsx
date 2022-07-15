@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react'
 import ProgressBar from './ProgressBar'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BottomSheet } from 'react-native-btr';
+import LottieView from 'lottie-react-native';
+
+
 interface Props {
     id: number,
     objectName: String,
@@ -33,6 +36,7 @@ export default function Objectives(props: Props) {
     const [editNote, setEditNote] = useState(props.objectNote);
     const [minus,setMinus] = useState(0);
     const [plus,setPlus] = useState(0);
+    const [winVisible, setWinVisible] = useState(false);
     const handleOnchangeEditName = (name) => { setEditName(name) };
     const handleOnchangeEditAmount = (amount) => { setEditAmount(amount) };
     const handleOnchangeEditCurr = (curr) => { setEditCurr(curr) };
@@ -44,13 +48,13 @@ export default function Objectives(props: Props) {
 
 
     const checkNums = () => {
-        if (progNum >= 0 && progNum < 25) {
+        if (progNum >= 0 && progNum <= 25) {
             setProgColor('#E98080')
         }
-        else if (progNum > 24 && progNum < 75) {
+        else if (progNum > 25 && progNum <=75) {
             setProgColor('#F6FA55')
         }
-        else if (progNum > 74 && progNum < 100) {
+        else if (progNum > 75 && progNum < 100) {
             setProgColor('#1DF667')
         }
         else if (progNum == 100) {
@@ -76,12 +80,15 @@ export default function Objectives(props: Props) {
 
     const toggleModalEdit = () => {
         setModalVisible(!modalVisible)
+        
     }
     const toggleMinus = () => {
         setMinusVisible(!minusVisible)
+        setMinus(0)
     }
     const togglePlus = () => {
         setPlusVisible(!plusVisible)
+        setPlus(0)
     }
 
     const deleteItem = async () => {
@@ -97,9 +104,7 @@ export default function Objectives(props: Props) {
 
 
     }
-    const sum=(a,b)=>{
-        return a+b
-    }
+   
 
 
 
@@ -124,10 +129,41 @@ export default function Objectives(props: Props) {
         const merge=res1.concat(res2)
 
         await AsyncStorage.setItem('objective',JSON.stringify(merge))
+        setModalVisible(!modalVisible)
 
     }
 
     const minusFunction = async () => {
+      
+        
+            const result = await AsyncStorage.getItem('objective')
+            let objectives = []
+            if (result !== null) {
+                objectives = JSON.parse(result)
+            }
+            
+            let objectives2 = objectives.filter(item => item.id == props.id)
+             objectives = objectives.filter(item => item.id != props.id)
+            objectives2[0].objectCurr = objectives2[0].objectCurr - minus
+            if(objectives2[0].objectCurr<0)
+            {
+                Alert.alert('Hedef Miktarının Daha Az Olamaz!', 'Mevcut Para Miktarı Sıfırlanacak', [{ text: 'Tamam', style: 'cancel' }], { cancelable: true })
+                objectives2[0].objectCurr = 0
+
+            }
+            const merge =objectives.concat(objectives2)
+            await AsyncStorage.setItem('objective', JSON.stringify(merge))
+            setMinusVisible(!minusVisible)
+        
+
+     
+        
+
+
+        
+    }
+
+    const plusFunction = async () => {
         if(minus>=props.objectAmount)
         {
             Alert.alert('Hedef Miktarının Daha Az Olamaz!', '', [{ text: 'Tamam', style: 'cancel' }], { cancelable: true })
@@ -141,15 +177,24 @@ export default function Objectives(props: Props) {
             
             let objectives2 = objectives.filter(item => item.id == props.id)
              objectives = objectives.filter(item => item.id != props.id)
-            objectives2[0].objectCurr = objectives2[0].objectCurr - minus
+            objectives2[0].objectCurr = -1*(-1*(objectives2[0].objectCurr) -(plus))
+            if(objectives2[0].objectCurr>props.objectAmount)
+            {
+                Alert.alert('Hedef Miktarından Daha Fazla Olamaz!', 'Mevcut Para Miktarı Tamamlanacak', [{ text: 'Tamam', style: 'cancel' }], { cancelable: true })
+                objectives2[0].objectCurr = props.objectAmount
+
+            }
             const merge =objectives.concat(objectives2)
             await AsyncStorage.setItem('objective', JSON.stringify(merge))
+            setPlusVisible(!plusVisible)
         }
 
-     
-        
 
-
+    }
+    const winToggle=()=>{
+        setWinVisible(!winVisible)
+    }
+    const winAlert=()=>{
         
     }
 
@@ -158,12 +203,13 @@ export default function Objectives(props: Props) {
 
     
 
-
+ 
     return (
         <View style={styles.objectiveDiv} >
+            {progNum==100 ? <TouchableOpacity onPress={winToggle} style={{width:'20%',height:'25%' ,position:'absolute',alignSelf:'flex-start' ,backgroundColor:'#7C3E66',borderRadius:25,borderBottomLeftRadius:0,borderTopRightRadius:0}} ><View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}} ><View style={{justifyContent:'center',flexDirection:'column',alignItems:'center',padding:15}}><Image   source={require('./icons/star.png')} /></View></View></TouchableOpacity> : null}
             <View style={styles.titleDiv} ><Text style={styles.titleText}>{props.objectName}</Text></View>
             <View style={styles.contentDiv} ><ProgressBar objectAmount={props.objectAmount} objectCurr={props.objectCurr} progColor={progColor} progNum={progNum} />
-
+          
             </View>
             <View style={styles.buttonsDiv} ><TouchableOpacity onPress={togglePlus} style={styles.addButton}><Image style={{ alignSelf: 'center' }} source={require('./icons/plus.png')} /></TouchableOpacity><TouchableOpacity onPress={toggleMinus} style={styles.addButton}><Image style={{ alignSelf: 'center' }} source={require('./icons/minus.png')} /></TouchableOpacity><TouchableOpacity onPress={DeleteItemAlert} style={styles.deleteButon}><Image style={{ alignSelf: 'center' }} source={require('./icons/close.png')} /></TouchableOpacity><TouchableOpacity onPress={toggleModalEdit} style={styles.editButton}><Image style={{ alignSelf: 'center' }} source={require('./icons/edit.png')} /></TouchableOpacity></View>
 
@@ -266,6 +312,7 @@ export default function Objectives(props: Props) {
 
 
                             <TouchableOpacity
+                            onPress={plusFunction}
                                 style={{ backgroundColor: '#7C3E66', width: '100%', height: '75%', margin: 85, justifyContent: 'center', alignItems: 'center', borderRadius: 50, }}
                                 activeOpacity={1}
 
@@ -276,6 +323,14 @@ export default function Objectives(props: Props) {
                         </View>
 
                     </View>
+
+                </View>
+            </BottomSheet>
+            <BottomSheet visible={winVisible}
+                onBackButtonPress={winToggle}
+                onBackdropPress={winToggle}>
+                <View style={styles.winBottomSheet} >
+                   <Text>Tebrikler</Text>
 
                 </View>
             </BottomSheet>
@@ -412,5 +467,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
 
 
+    },
+    winBottomSheet:{
+        backgroundColor: '#fff',
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
     }
 })
