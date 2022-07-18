@@ -330,7 +330,14 @@ export default function Objectives(props: Props) {
                 onBackButtonPress={winToggle}
                 onBackdropPress={winToggle}>
                 <View style={styles.winBottomSheet} >
-                   <Text>Tebrikler</Text>
+                   <Image style={{width:'50%',height:'50%'}} source={require('./icons/illustrator.png')} />
+                   <View style={{justifyContent:'center',flexDirection:'column'}} ><View style={{justifyContent:'center',flexDirection:'row'}}><Text style={{fontSize:25}}>Tebrikler</Text></View>
+                   <View style={{justifyContent:'center',flexDirection:'row',alignSelf:'center',marginTop:2}}><Text style={{fontSize:25,color:'green'}}>{props.objectName} </Text></View>
+                   <View style={{justifyContent:'center',flexDirection:'row',alignSelf:'center',marginTop:2}}><Text style={{fontSize:20}}>Hedefinizi Tamamladınız </Text></View>
+
+                   <View style={{justifyContent:'center',flexDirection:'row',alignSelf:'center',marginTop:2}}><Text style={{fontSize:25,color:'black' }}>"{props.objectNote}" </Text></View>
+
+                   </View>
 
                 </View>
             </BottomSheet>
@@ -473,5 +480,6 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         alignItems: 'center',
+        justifyContent:'center'
     }
 })

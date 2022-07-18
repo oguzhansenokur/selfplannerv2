@@ -14,6 +14,12 @@ type PropType = {
   objectNote : String
 
 }
+type ObjectType = {
+  name: String,
+  amount: number,
+  curr: number,
+  note: String
+}
 
 export default function App() {
   const [objName,setObjName]= useState('')
@@ -42,13 +48,19 @@ export default function App() {
 
   const handleSubmit = async ()=>{
    
-    
+      if(objName=='' || objAmount==0  || objNote==''){
+        Alert.alert('Lütfen Tüm Alanları Doldurunuz')
+      }
+      else{
+        const newObj={id:Date.now(),objectName:objName,objectAmount:objAmount,objectCurr:objCurr,objectNote:objNote}
+        const newObjectives = [...objectives,newObj]
+        setObjectives(newObjectives)
+        await AsyncStorage.setItem('objective',JSON.stringify(newObjectives))
+        toggleBottomNavigationView()
+      }
+      
 
-      const newObj={id:Date.now(),objectName:objName,objectAmount:objAmount,objectCurr:objCurr,objectNote:objNote}
-      const newObjectives = [...objectives,newObj]
-      setObjectives(newObjectives)
-      await AsyncStorage.setItem('objective',JSON.stringify(newObjectives))
-    
+   
 
 
   }
